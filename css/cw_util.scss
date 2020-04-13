@@ -1,0 +1,24 @@
+* {
+    padding          : 0;
+    margin           : 0;
+    background-repeat: no-repeat;
+    background-size  : contain;
+}
+
+.cw-ul {
+    list-style: none;
+}
+
+.cw-flex {
+    display        : flex;
+    justify-content: space-between;
+    align-items    : center;
+}
+
+.cw-overflow {
+    overflow     : hidden;
+    text-overflow: ellipsis;
+    white-space  : nowrap;
+}
+
+@import './cw_compatible.scss'
