@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id='cwApp'>
+        <div>{{parMsg}}</div>
+        <menu-item1 param1='父组件通过属性直接传来的参数' param2='父组件直接传来的第二个参数'></menu-item1>
+        <menu-item1 :param1='parSendMsg' :param2='parSendMsg2'></menu-item1>
+        <h1>props可接收的数据类型：</h1>
+        <menu-item2 :param1='parStrData'></menu-item2>
+        <menu-item3 :param1='parNumberData'></menu-item3>
+        <menu-item4 :param1='parBooleanData'></menu-item4>
+        <menu-item5 :param1='parArrayData'></menu-item5>
+        <menu-item6 :param1='parObjectData'></menu-item6>
+        <h1>以上组件可合并为一个组件，props接受多个参数。此处仅为练习。</h1>
+    </div>
+    <script src="./js/vue.js"></script>
+    <script>
+        Vue.component('menu-item1', {
+            props: ['param1', 'param2'],  // 接收父组件传来的参数，可为多个
+            data: function () {
+                return {
+                    childMsg: '子组件的数据'
+                }
+            },
+            template: `
+            <div>{{childMsg+'------'+param1+'-----'+param2}}</div>
+            `
+        })
+        Vue.component('menu-item2', {
+            props: ['param1'],
+            data: function () {
+                return {
+                    msg: '1.接受字符串数据：'
+                }
+            },
+            template: '<div>{{msg + param1}}</div>'
+        })
+        /**
+        *局部组件
+        */
+        var menuItem3 = {
+            props: ['param1'],
+            data: function () {
+                return {
+                    msg: '2.接受数字数据：'
+                }
+            },
+            template: '<div> {{ msg + (param1+12)+"(传递数据为12，做了+10运算。注意：直接传递为字符串12，用v-bind传递为Number，与Boolean相似)"}}</div > '
+        }
+        var menuItem4 = {
+            props: ['param1'],
+            data: function () {
+                return {
+                    msg: '3.接受布尔数据：'
+                }
+            },
+            template: '<div> {{ msg + param1}}</div > '
+        }
+        var menuItem5 = {
+            props: ['param1'],
+            data: function () {
+                return {
+                    msg: '4.接受数组数据：'
+                }
+            },
+            template: `
+            <div>
+             {{ msg }}
+             <ul>
+             <li :key='index' v-for='(item,index) in param1'>数组元素{{index}}:{{item}}</li>
+             </ul>
+            </div>
+            `
+        }
+        var menuItem6 = {
+            props: ['param1'],
+            data: function () {
+                return {
+                    msg: '5.接受对象数据：'
+                }
+            },
+            template: '<div> {{ msg }}<span>编号{{param1.id}}</span><span>，姓名{{param1.name}}</span></div > '
+        }
+        var vm = new Vue({
+            el: '#cwApp',
+            data: {
+                parMsg: '父组件数据',
+                parSendMsg: '父组件通过v-bind的绑定的方法传递的数据',
+                parSendMsg2: '父组件通过v-bind的绑定的方法传递的第二个数据',
+                parStrData: 'props可接受字符串、数字、布尔、数组和对象',
+                parNumberData: 10,
+                parBooleanData: false,
+                parArrayData: ['apple', 'orange', 'banana'],
+                parObjectData: {
+                    id: 0,
+                    name: 'lisi'
+                }
+            },
+            components: {
+                'menu-item3': menuItem3,
+                'menu-item4': menuItem4,
+                'menu-item5': menuItem5,
+                'menu-item6': menuItem6,
+            }
+        })
+    </script>
+</body>
+
+</html>

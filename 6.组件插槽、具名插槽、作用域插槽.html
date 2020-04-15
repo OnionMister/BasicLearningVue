@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id='cwApp'>
+        <h1>组件插槽，用于父组件向子组件传递内容，不是变量交互</h1>
+        <h1>VUE提供专门的API"slot标签"</h1>
+        <hr />
+        <h1>例：</h1>
+        <tip-tag></tip-tag>
+        <tip-tag>
+            {{msg}}
+        </tip-tag>
+        <hr />
+        <h1>具名组件插槽</h1>
+        <h1>父组件中标签添加‘slot='name名字'’属性，与slot标签的name对应</h1>
+        <h1>多条信息传入同一插槽，可用template标签做临时包裹，这也只加一次‘slot='name名字'’属性，同时也能提升代码可读性,如下例的footer</h1>
+        <h1>例：</h1>
+        <have-name-slot style="border: 1px dashed orange;">
+            <p slot='header'>父组件传来的header</p>
+            <p>无名插槽传来的主要内容1</p>
+            <p>无名插槽传来主要内容2</p>
+            <template slot='footer'>
+                <p>父组件传来的footer1</p>
+                <p>父组件传来的footer2</p>
+            </template>
+        </have-name-slot>
+        <hr />
+        <h1>作用域插槽</h1>
+        <h2>应用场景：父组件对子组件的内容进行加工</h2>
+        <h2>父组件中加入'template'标签使用'slot-scope='变量名''属性接受子组件的绑定属性</h2>
+        <first-list :param-list='firstList'>
+            <template slot-scope='slotProps'>
+                <strong v-if="slotProps.slotInfo.id==2" style="color: orange;">{{slotProps.slotInfo.name}}</strong>
+                <span v-else>{{slotProps.slotInfo.name}}</span>
+            </template>
+        </first-list>
+    </div>
+    <script src="./js/vue.js"></script>
+    <script>
+        Vue.component('tip-tag', {
+            data: function () {
+                return {
+
+                }
+            },
+            template: `
+            <div>
+                <strong>ERROR:</strong>
+                <slot>我是slot的默认内容，父组件没有传递内容</slot>
+            </div>
+            `
+        })
+        Vue.component('have-name-slot', {
+            data: function () {
+                return {}
+            },
+            template: `
+            <div>
+                <header>
+                    <strong>tip：</strong>
+                    <slot name='header'></slot>
+                </header>
+                <main>
+                    <slot></slot>
+                </main>
+                <footer>
+                    <slot name='footer'></slot>
+                </footer>
+            </div>
+            `
+        })
+        Vue.component('first-list', {
+            props: ['paramList'],
+            data: function () {
+                return {}
+            },
+            template: `
+            <ul>
+               <li :key='index' v-for='(item,index) in paramList'>
+                    <slot :slotInfo='item'>{{item.name}}</slot>
+               </li> 
+            </ul>
+            `
+        })
+        var vm = new Vue({
+            el: '#cwApp',
+            data: {
+                msg: '我是父组件传递的内容',
+                firstList: [
+                    { id: 1, name: 'apple' },
+                    { id: 2, name: 'orange' },
+                    { id: 3, name: 'banana' },
+                ]
+            },
+            methods: {
+
+            }
+        })
+    </script>
+</body>
+
+</html>

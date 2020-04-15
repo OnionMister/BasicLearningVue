@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id='cwAPP'>
+        <h1>1.props数据传递原则：单向传递，不建议直接操作props中的数据</h1>
+        <h1>2.为此提供了专门的方法解决子组件向父组件传递参数，即自定义事件</h1>
+        <h1>3.子组件被点击时会触发$emit('参数1','参数2')，其中的‘参数1’为自定义事件，‘参数2’为数据</h1>
+        <h1>4.父组件中通过‘参数1’命名的自己定义事件，$event作为参数接收‘参数2’</h1>
+        <div :style='{fontSize:fontSize+"px"}'>{{msg}}</div>
+        <cpt-item @large-text='handle($event)'></cpt-item>
+    </div>
+    <script src="./js/vue.js"></script>
+    <script>
+        Vue.component('cpt-item', {
+            data: function () {
+                return {
+
+                }
+            },
+            template: `
+            <div>
+            <button @click='$emit("large-text",2)'>父级字体变大</button>
+            </div>
+            `
+        })
+        var vm = new Vue({
+            el: '#cwAPP',
+            data: {
+                msg: '父组件数据',
+                fontSize: 10,
+            },
+            methods: {
+                handle: function (val) {
+                    this.fontSize += val;
+                }
+            },
+        })
+    </script>
+</body>
+
+</html>

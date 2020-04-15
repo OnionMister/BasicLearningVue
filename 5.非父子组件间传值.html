@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <div id='cwApp'>
+        <h1>非父子组件传值要通过事件中心</h1>
+        <h1>1.var eventHub=new Vue()单独实例化Vue的对象eventHub作为事件中心</h1>
+        <h1>
+            2.事件的监听和销毁<br />
+            eventHub.on('add-todo',addTodo) // 监听，第一个参数为自定义事件，第二个参数为事件携带方法<br />
+            eventHub.off('add-todo') // 销毁
+        </h1>
+        <h1>
+            3.触发事件<br />
+            eventHub.$emit('add-todo',id) // 触发自定义事件，可携带参数
+        </h1>
+        <hr />
+        <h1>例：(点击按钮，对方增加)</h1>
+        <cpt-tom></cpt-tom>
+        <cpt-jerry></cpt-jerry>
+        <div style="border-top: 1px dashed orange;width: 200px;margin-top: 20px;padding-top: 10px;">
+            <button @click='handle'>销毁</button>
+        </div>
+    </div>
+    <script src="./js/vue.js"></script>
+    <script>
+        // 事件中心hub
+        var hub = new Vue();
+        Vue.component('cpt-tom', {
+            data: function () {
+                return { num: 0 }
+            },
+            template: `
+            <div>
+                <div>Tom:{{num}}</div>
+                <div>
+                    <button @click='handle'>点击</button>
+                </div>
+            </div>
+            `,
+            methods: {
+                handle: function () {
+                    // 触发对方的事件即Jerry的事件jerry-event
+                    hub.$emit('jerry-event', 10);
+                }
+            },
+            mounted: function () {
+                // 进行事件监听
+                hub.$on('tom-event', (val) => {  // 接收Jerry传递过来的参数
+                    this.num += val;
+                });
+            },
+        });
+        Vue.component('cpt-jerry', {
+            data: function () {
+                return { num: 0 }
+            },
+            template: `
+            <div>
+                <div>Jerry:{{num}}</div>
+                <div>
+                    <button @click='handle'>点击</button>
+                </div>
+            </div>
+            `,
+            methods: {
+                handle: function () {
+                    // 触发对方的事件即Tom的事件tom-event
+                    hub.$emit('tom-event', 1);
+                }
+            },
+            mounted: function () {
+                hub.$on('jerry-event', (val) => {  // 接受Tom传来的参数
+                    this.num += val;
+                })
+            }
+        });
+        var vm = new Vue({
+            el: '#cwApp',
+            data: {
+
+            },
+            methods: {
+                handle: function () {
+                    hub.$off('tom-event');
+                    hub.$off('jerry-event');
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
