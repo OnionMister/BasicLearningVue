@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .cw-ul {
+            list-style: none;
+        }
+
+        .cw-overflow {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        .cw-a {
+            text-decoration: none;
+        }
+
+        .cw-flex {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart {
+            width: 400px;
+            margin: auto;
+            box-shadow: 1px 2px 10px 2px rgba(244, 233, 222, .8);
+        }
+
+        .cart-tit {
+            text-align: center;
+            line-height: 40px;
+            background: orange;
+            color: #fff;
+        }
+
+        .cart-item {
+            width: 100%;
+            border-bottom: 1px dashed orange;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .cart-item-img {
+            width: 80px;
+            height: 40px;
+        }
+
+        .cart-name {
+            flex: 1;
+            text-align: center;
+            padding: 0 10px;
+        }
+
+        .cart-num {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            margin: 0;
+            outline: none;
+            border: none;
+            text-align: center;
+            border-top: 1px solid orange;
+            border-bottom: 1px solid orange;
+            box-sizing: border-box;
+        }
+
+        .cart-sub,
+        .cart-add {
+            width: 40px;
+            height: 40px;
+            display: inline-block;
+            line-height: 40px;
+            background: orange;
+            color: #fff;
+            text-align: center;
+        }
+
+        .cart-del {
+            width: 30px;
+            height: 100%;
+            font-size: 30px;
+            text-align: center;
+            color: red;
+        }
+
+        /* 底部结算 */
+        .cart-total {
+            padding: 15px 15px;
+            background: orange;
+            color: #fff;
+            text-align: right;
+        }
+
+        .cart-total-btn {
+            width: 70px;
+            height: 30px;
+            color: #fff;
+            margin-left: 10px;
+            border: none;
+            outline: none;
+            background: orangered;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='cwApp'>
+        <h1 style="text-align: center;margin: 20px 0;">不做过多逻辑判断，只为组件化练习</h1>
+        <my-cart></my-cart>
+    </div>
+    <script src="./js/vue.js"></script>
+    <script>
+        var CartTit = {  // 标题
+            props: ['uName'],
+            template: `
+                <div class='cart-tit'>{{uName}}的购物车</div>
+            `
+        }
+        var CartList = {  // 列表
+            props: ['cartList'],
+            template: `
+                <ul class='cart-list cw-ul'>
+                    <li :key='index' v-for='(item,index) in cartList' class='cart-item cw-flex'>
+                        <img :src='item.img' alt='图片' class='cart-item-img' />
+                        <span class='cart-name cw-overflow'>{{item.name}}</span>
+                        <div class='cw-flex'>
+                            <a href='' class='cart-sub cw-a' @click.prevent='subClick(item.id)'>-</a>
+                            <input type='text' class='cart-num' :value='item.num' @blur='changeNum(item.id,$event)'/>
+                            <a href='' class='cart-add cw-a' @click.prevent='addClick(item.id)'>+</a>
+                        </div>
+                        <div class='cart-del' @click='del(item.id)'>×</div>
+                    </li>
+                </ul>
+            `,
+            methods: {
+                subClick: function (id) {
+                    // 不建议直接操作父组件中的数据，要使用自定义事件在父组件中操作
+                    this.$emit('change-num', { id: id, type: 'sub' });
+                },
+                addClick: function (id) {
+                    // 不建议直接操作父组件中的数据，要使用自定义事件在父组件中操作
+                    this.$emit('change-num', { id: id, type: 'add' });
+                },
+                changeNum: function (id, event) {
+                    // 不建议直接操作父组件中的数据，要使用自定义事件在父组件中操作
+                    this.$emit('change-num', { id: id, type: 'change', num: event.target.value })
+                },
+                del: function (id) {
+                    // 不建议直接操作父组件中的数据，要使用自定义事件在父组件中操作
+                    this.$emit('cart-del', id)  // 父组件用$event接受参数id
+                }
+            }
+        }
+        var CartTotal = {  // 结算
+            props: ['cartList'],
+            template: `
+                <div class='cart-total'>
+                    <span>总计：{{total}}</span>
+                    <button class='cart-total-btn'>结算</button>
+                </div>
+            `,
+            computed: {
+                total: function () {
+                    // 计算总价
+                    var t = 0;
+                    this.cartList.forEach(item => {
+                        t += (item.price * item.num);
+                    });
+                    return t;
+                }
+            }
+        }
+        Vue.component('my-cart', {
+            data: function () {
+                return {
+                    uName: '张三',
+                    list: [
+                        { id: 1, name: '商品1', price: 1000, num: 1, img: './img/banner1.jpg' },
+                        { id: 2, name: '商品2', price: 1000, num: 1, img: './img/banner2.jpg' },
+                        { id: 3, name: '商品3', price: 1000, num: 1, img: './img/banner3.jpg' },
+                        { id: 4, name: '商品4', price: 1000, num: 1, img: './img/banner4.jpg' },
+                        { id: 5, name: '商品5', price: 1000, num: 1, img: './img/banner5.jpg' },
+                    ]
+                }
+            },
+            template: `
+                <div class='cart'>
+                    <cart-tit :uName='uName'></cart-tit>
+                    <cart-list :cartList='list' @change-num='changeNum($event)' @cart-del='delCart($event)'></cart-list>
+                    <cart-total :cartList='list'></cart-total>
+                </div>
+            `,
+            components: {
+                'cart-tit': CartTit,
+                'cart-list': CartList,
+                'cart-total': CartTotal,
+            },
+            methods: {
+                changeNum: function (val) {
+                    // 根据子组件传过来的数据更新list中的数据
+                    if (val.type == 'change') {  // 直接输入数量
+                        this.list.some(item => {
+                            if (item.id == val.id) {
+                                item.num = val.num;
+                                return true; // 通过 返回 true 结束some()
+                            }
+                        })
+                    } else if (val.type == 'sub') {  // 减号
+                        this.list.some(item => {
+                            if (item.id == val.id) {
+                                item.num -= 1;
+                                return true;// 通过 返回 true 结束some()
+                            }
+                        })
+                    } else if (val.type == 'add') {  // 减号
+                        this.list.some(item => {
+                            if (item.id == val.id) {
+                                item.num += 1;
+                                return true;// 通过 返回 true 结束some()
+                            }
+                        })
+                    }
+                },
+                delCart: function (id) {
+                    // 方法1：找到索引，然后使用splice()删除项
+                    // var index = this.list.findIndex(item => {
+                    //     return item.id == id
+                    // });
+                    // this.list.splice(index, 1);
+
+                    //----------------------------------------
+
+                    // 方法2：使用filter()过滤出不等于要删除项id的项目，filter()返回的是数组
+                    this.list = this.list.filter(item => {
+                        return item.id != id
+                    })
+                }
+            }
+        })
+        var vm = new Vue({
+            el: '#cwApp',
+            data: {
+
+            },
+            methods: {
+
+            },
+        })
+    </script>
+</body>
+
+</html>
