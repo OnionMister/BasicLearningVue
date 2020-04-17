@@ -8,6 +8,13 @@
 </head>
 
 <body>
+    <h2>
+        源码：
+        <a href="https://github.com/OnionMister/BasicLearningVue.git">
+            <strong>https://github.com/OnionMister/BasicLearningVue.git</strong>
+        </a>
+    </h2>
+    <hr />
     <div id='cwApp'>
         <h1>组件插槽，用于父组件向子组件传递内容，不是变量交互</h1>
         <h1>VUE提供专门的API"slot标签"</h1>
@@ -34,7 +41,7 @@
         <hr />
         <h1>作用域插槽</h1>
         <h2>应用场景：父组件对子组件的内容进行加工</h2>
-        <h2>父组件中加入'template'标签使用'slot-scope='变量名''属性接受子组件的绑定属性</h2>
+        <h2>父组件中加入'template'标签使用'slot-scope='变量名'属性接收子组件的绑定属性</h2>
         <first-list :param-list='firstList'>
             <template slot-scope='slotProps'>
                 <strong v-if="slotProps.slotInfo.id==2" style="color: orange;">{{slotProps.slotInfo.name}}</strong>
