@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>
+        <p>
+            源码：
+            <a href="https://github.com/OnionMister/BasicLearningVue.git" target="_target">
+                <strong>https://github.com/OnionMister/BasicLearningVue.git</strong>
+            </a>
+        </p>
+        <p>
+            接口模拟服务：
+            <a href="http://www.dreamload.cn/blog/?p=979" target="_target">
+                <strong>http://www.dreamload.cn/blog/?p=979</strong>
+            </a>
+        </p>
+    </h2>
+    <hr />
+    <h1>1.Axios常用API</h1>
+    <ul>
+        <li>get</li>
+        <li>post</li>
+        <li>put</li>
+        <li>delete</li>
+    </ul>
+    <hr />
+    <h1>2.Axios的GET传递参数</h1>
+    <ul>
+        <li>传统url传递参数‘url?id=123’</li>
+        <li>restful形式的URL传递参数‘url/123’。<strong>注：多参数用斜线拼接，如：‘url/123/456/杨少通’</strong></li>
+        <li>params传递参数params:{id:123}，接口使用req.query接收参数</li>
+    </ul>
+    <hr />
+    <h1>3.Axios的DELETE传递参数</h1>
+    <ul>
+        <li>Delete传参和Get传参相同，此处不做赘述和演示，将get换位delete即可</li>
+    </ul>
+    <hr />
+    <h1>3.Axios的POST传递参数</h1>
+    <ul>
+        <li>POST传参默认为Json格式，形如：axios.post(url,{id:1,name:'lisi'})，接口通过body接收</li>
+        <li>POST传递表单数据即applaication/x-www-form-urlencoded，要通过URLSearchRarams实例化对象，然后将参数通过append()加入到该对象中</li>
+        <li>
+            <strong>例：</strong>
+        </li>
+    </ul>
+    axios获取实际数据要通过‘.data’的方式获取
+    <script src="./js/axios.min.js"></script>
+    <script>
+        var myConsole = {
+            dataConsole: function (res) {
+                console.log(res.data);
+                console.log('*****************************************************')
+            }
+        }
+        // axios基础测试
+        axios.get('http://localhost:3101/asData0').then((res) => {
+            myConsole.dataConsole(res)
+        }).catch((err) => {
+            console.log(err);
+        });
+        //------------------------------------------------------------------------------------------------------------
+        // axios传参----传统URL的get传参
+        axios.get('http://localhost:3101/asData1?id=456').then(res => {
+            myConsole.dataConsole(res)
+        }).catch(err => {
+            console.log(err);
+        });
+        // axios传参----restful形式的URL的get传参
+        axios.get('http://localhost:3101/asData2/789').then(res => {
+            myConsole.dataConsole(res)
+        })
+        // axios的get传参---params
+        axios.get('http://localhost:3101/asData3', {
+            params: {
+                id: 777
+            }
+        }).then(res => {
+            myConsole.dataConsole(res)
+        })
+        //------------------------------------------------------------------------------------------------------------
+        // axios传参----restful形式的URL的delete传多参
+        axios.delete('http://localhost:3101/asDataDel/133/杨少通').then(res => {
+            myConsole.dataConsole(res)
+        });
+        //------------------------------------------------------------------------------------------------------------
+        // axios传参----post
+        axios.post
+    </script>
+</body>
+
+</html>

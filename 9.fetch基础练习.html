@@ -9,15 +9,23 @@
 
 <body>
     <h2>
-        源码：
-        <a href="https://github.com/OnionMister/BasicLearningVue.git">
-            <strong>https://github.com/OnionMister/BasicLearningVue.git</strong>
-        </a>
+        <p>
+            源码：
+            <a href="https://github.com/OnionMister/BasicLearningVue.git" target="_target">
+                <strong>https://github.com/OnionMister/BasicLearningVue.git</strong>
+            </a>
+        </p>
+        <p>
+            接口模拟服务：
+            <a href="http://www.dreamload.cn/blog/?p=979" target="_target">
+                <strong>http://www.dreamload.cn/blog/?p=979</strong>
+            </a>
+        </p>
     </h2>
     <hr />
     <h1>接口调用Fetch</h1>
     <ul>
-        <li>fetch等同于 XMLHttpRequest。它提供了许多与XMLHttpRequest相同的功能，但被设计成更具可扩展性和高效性</li>
+        <li>fetch等同于 XMLHttpresuest。它提供了许多与XMLHttpresuest相同的功能，但被设计成更具可扩展性和高效性</li>
         <li>body类定义了arrayBuffer()、blob()、json()、text()、formData()方法，这些方法返回的都是Promise对象和数据，所以通过第二个then拿到想要的数据</li>
         <li>不管是请求还是响应都能够包含 body 对象。</li>
     </ul>
@@ -31,8 +39,8 @@
     <hr />
     <h1>2.fetch的Get请求传参</h1>
     <ul>
-        <li>传统URL：‘url/http://localhost:3101/abc?id=12’。接收时，接口地址参数为：‘/abc’，方法参数为：(req,res)=>{}，使用req.query.id获取值</li>
-        <li>restful形式的URL：‘url/http://localhost:3101/abc/123’。接收时接口地址参数为：‘/abc/:id’，方法参数为：(req,res)=>{}，使用req.params.id获取值
+        <li>传统URL：‘url/http://localhost:3101/abc?id=12’。接收时，接口地址参数为：‘/abc’，方法参数为：(res,res)=>{}，使用res.query.id获取值</li>
+        <li>restful形式的URL：‘url/http://localhost:3101/abc/123’。接收时接口地址参数为：‘/abc/:id’，方法参数为：(res,res)=>{}，使用res.params.id获取值
         </li>
     </ul>
     <hr />
@@ -44,8 +52,16 @@
     <h1>4.fetch的post请求传参</h1>
     <ul>
         <li>配置参数method:'post'</li>
-        <li>配置参数body:'uName=lisi&pwd=111'</li>
-        <li>配置参数headers:{'Content-Type':'application/x-www-form-urlencoded'}</li>
+        <li>配置参数body:'uName=lisi&pwd=111' 或者 body:JSON.stringify({uName:'lisi',pwd:111})</li>
+        <li>配置参数headers:{'Content-Type':'application/x-www-form-urlencoded' 或者 'Content-Type':'application/json'}</li>
+    </ul>
+    <hr />
+    <h1>5.fetch的put请求传参</h1>
+    <ul>
+        <li>配置参数method:'put'</li>
+        <li>配置参数body:'uName=lisi&pwd=111' 或者 body:JSON.stringify({uName:'lisi',pwd:111})</li>
+        <li>配置参数headers:{'Content-Type':'application/x-www-form-urlencoded' 或者 'Content-Type':'application/json'}</li>
+        <li>一般用于修改数据，练习中假定：传递要修改的数据的id和修改数据</li>
     </ul>
     <strong>注：例子：查看源码，效果见Console</strong>
     <script>
@@ -58,34 +74,76 @@
             })
             .then(function (myJson) {
                 console.log(myJson);
+                console.log('****************************************************')
             });
         // --------------------------------------------
         // fetch的get传参数 ---传统url
         fetch('http://localhost:3101/abc?id=123', { method: 'get' }).then(data => {
             return data.text()  // 返回Promise对象
-        }).then(req => {
-            console.log(req)
+        }).then(res => {
+            console.log(res)
+            console.log('****************************************************')
         });
         // fetch的get传参数 ---restful形式的url
         fetch('http://localhost:3101/abc/123', { method: 'get' }).then(data => {
             return data.text()  // 返回Promise对象
-        }).then(req => {
-            console.log(req)
+        }).then(res => {
+            console.log(res)
+            console.log('****************************************************')
         });
         // --------------------------------------------
         // fetch的delete传参数 ---restful形式的url
         fetch('http://localhost:3101/abc/123', { method: 'delete' }).then(data => {
             return data.text()  // 返回Promise对象
-        }).then(req => {
-            console.log(req)
+        }).then(res => {
+            console.log(res)
+            console.log('****************************************************')
         });
         // --------------------------------------------
-        // fetch的post传参数
+        // fetch的post传参数---body字符串
         fetch('http://localhost:3101/abc', { method: 'post', body: 'uName=lisi&pwd=123', headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }).then(data => {
             return data.text()  // 返回Promise对象
-        }).then(req => {
-            console.log(req)
+        }).then(res => {
+            console.log(res)
+            console.log('****************************************************')
         });
+        // fetch的post传参数---body Json字符串
+        fetch('http://localhost:3101/abc', {
+            method: 'post',
+            body: JSON.stringify({
+                uName: 'JSON字符串',
+                pwd: '123'
+            }),
+            headers: { 'Content-Type': 'application/json' }
+        }).then(data => {
+            return data.text();
+        }).then(res => {
+            console.log(res)
+            console.log('****************************************************')
+        })
+        // --------------------------------------------
+        // fetch的put传参数---body Json字符串
+        fetch('http://localhost:3101/abc/123', {
+            method: 'put',
+            body: JSON.stringify({
+                uName: '王五',
+                pwd: '321'
+            }),
+            headers: { 'Content-Type': 'application/json' }
+        }).then(data => {
+            return data.text();
+        }).then(res => {
+            console.log(res);
+            console.log('****************************************************')
+        })
+        // --------------------------------------------
+        // fetch获取Json数据
+        fetch('http://localhost:3101/json').then(data => {
+            return data.json();
+        }).then(res => {
+            console.log(res);
+            console.log('****************************************************')
+        })
     </script>
 </body>
 

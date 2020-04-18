@@ -36,14 +36,52 @@ app.get('/abc/:id', (req, res) => {
     res.send(`GET的restful形式的URL传参：${req.params.id}`)
 })
 // fetch的delete传参---resful形式的URL传参
-app.delete('/abc/:id',(req,res)=>{
+app.delete('/abc/:id', (req, res) => {
     res.send(`DELETE的restful形式的URL传参：${req.params.id}`)
 })
 // fetch的post传参
 app.post('/abc', (req, res) => {
     res.send(`POST请求参数：${req.body.uName}---${req.body.pwd}`)
 })
+// fetch的put传参
+app.put('/abc/:id', (req, res) => {
+    res.send(`PUT传递参数：要修改的数据id为：${req.params.id}，数据要修改为：${req.body.uName}----${req.body.pwd}`)
+})
+
+// fetch的Json数据传送
+app.get('/json', (req, res) => {
+    res.json({  // 直接发送json，也可用send
+        id: 1,
+        name: '杨少通',
+        gender: 'man',
+        age: 23,
+        type: 'JsonFormatData'
+    })
+})
+//-------------------------------------------------------------------------------------------------------------
+// axios 基础练习
+app.get('/asData0', (req, res) => {
+    res.send('Hello Axios');
+})
+
+// axios的get传递参数---传统URL
+app.get('/asData1', (req, res) => {
+    res.send(`Axios的Get传统URL传递参数：${req.query.id}`);
+})
+// axios的get传递参数---restful形式的URL
+app.get('/asData2/:id', (req, res) => {
+    res.send(`Axios的Restful形式URL的Get传参：${req.params.id}`);
+})
+//---------------------------------------------------------------
+// axios的delete传递参数---restful形式的URL传参
+app.delete('/asDataDel/:id/:name', (req, res) => {
+    res.send(`Axios的Delete传参,restful形式的URL传多参：${req.params.id}----${req.params.name}`)
+})
 // 启动监听
 app.listen(3101, () => {
     console.log('ServiceTurnedOn')
+})
+// axios的get传递参数---params
+app.get('/asData3', (req, res) => {
+    res.send(`Axios通过Get传递params参数：${req.query.id}`)
 })
