@@ -5,6 +5,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        .cw-example {
+            width: fit-content;
+            border: 1px solid orange;
+            padding: 10px;
+            background: #fef;
+        }
+    </style>
 </head>
 
 <body>
@@ -21,6 +29,7 @@
                 <strong>http://www.dreamload.cn/blog/?p=979</strong>
             </a>
         </p>
+        <strong>注：例子可查看源码，效果见Console</strong>
     </h2>
     <hr />
     <h1>1.Axios常用API</h1>
@@ -43,17 +52,83 @@
         <li>Delete传参和Get传参相同，此处不做赘述和演示，将get换位delete即可</li>
     </ul>
     <hr />
-    <h1>3.Axios的POST传递参数</h1>
+    <h1>4.Axios的POST传递参数</h1>
     <ul>
         <li>POST传参默认为Json格式，形如：axios.post(url,{id:1,name:'lisi'})，接口通过body接收</li>
         <li>POST传递表单数据即applaication/x-www-form-urlencoded，要通过URLSearchRarams实例化对象，然后将参数通过append()加入到该对象中</li>
         <li>
             <strong>例：</strong>
+            <div class="cw-example">
+                <p> var params = new URLSearchParams();</p>
+                <p> params.append('sendType', 'post');</p>
+                <p> params.append('dataType', '表单格式');</p>
+                <p> params.append('way', '用URLSearchParams实例化对象，通过append()给实例对象添加参数');</p>
+                <p> axios.post(`${myUrl}/asDataPost2`, params).then(res => {</p>
+                <p> myConsole.dataConsole(res);</p>
+                <p> })</p>
+            </div>
         </li>
     </ul>
-    axios获取实际数据要通过‘.data’的方式获取
+    <h1>6.Axios的PUT传递参数</h1>
+    <ul>
+        <li>PUT传参和POST传参相同，此处不做赘述和演示，将post换位put即可</li>
+    </ul>
+    <hr />
+    <h1>7.Axios的响应结果--主要属性</h1>
+    <ul>
+        <li>data：实际响应回来的数据</li>
+        <li>headers：响应头信息。<strong>注意：不能出现utf-8内容，即中文</strong></li>
+        <li>status：响应状态码，200表示正常</li>
+        <li>statusText：响应状态信息</li>
+    </ul>
+    <hr />
+    <h1>8.Axios的常用全局配置</h1>
+    <ul>
+        <li>axios.defaults.timeout=3000; // 超时时间</li>
+        <li>axios.defaults.baseURL='http://localhost:3101/app'; // 默认地址</li>
+        <li>axios.defaults.headers['userToken']='token值' // 设置请求头</li>
+        <li><strong>这些配置再拦截器中配置更加灵活，见下一小节</strong></li>
+    </ul>
+    <hr />
+    <h1>9.Axios的拦截器</h1>
+    <ul>
+        <li>
+            <p>请求拦截器：在请求前，经过请求拦截器后才能够通过URL访问服务接口，即：用于在请求发送前设置一些信息。</p>
+            <p><strong>必须return config，否则无效</strong></p>
+            <strong>例：</strong>
+            <div class="cw-example">
+                <p> axios.interceptors.request.use(function (config) {</p>
+                <p> // 请求配置,如</p>
+                <p>config.headers.myToken = 'new token';</p>
+                <p> return config; // 必须返回config，否则无效</p>
+                <p> }, function (err) {</p>
+                <p> // 错误处理</p>
+                <p> console.log(err)</p>
+                <p> })</p>
+            </div>
+        </li>
+        <li>
+            <p>响应拦截器：在获取到数据前对数据进行一些加工处理</p>
+            <strong>例：</strong>
+            <div class="cw-example">
+                <p> // 配置响应拦截器</p>
+                <p> axios.interceptors.response.use(function (res) { // 接收响应的内容，通过.data获取到数据</p>
+                <p> // 响应配置，如：</p>
+                <p> console.log(`原数据为：${res.data}`);</p>
+                <p> res.data='New Data'</p>
+                <p> console.log(`更改数据为：${res.data}`);</p>
+                <p> return res; // 返回更改后的数据，不返回无效</p>
+                <p> }, function (err) {</p>
+                <p> // 错误处理</p>
+                <p> console.log(err);</p>
+                <p> })</p>
+            </div>
+        </li>
+    </ul>
+    <hr />
     <script src="./js/axios.min.js"></script>
     <script>
+        var myUrl = 'http://localhost:3101'
         var myConsole = {
             dataConsole: function (res) {
                 console.log(res.data);
@@ -61,24 +136,24 @@
             }
         }
         // axios基础测试
-        axios.get('http://localhost:3101/asData0').then((res) => {
+        axios.get(myUrl + '/asData0').then((res) => {
             myConsole.dataConsole(res)
         }).catch((err) => {
             console.log(err);
         });
         //------------------------------------------------------------------------------------------------------------
         // axios传参----传统URL的get传参
-        axios.get('http://localhost:3101/asData1?id=456').then(res => {
+        axios.get(myUrl + '/asData1?id=456').then(res => {
             myConsole.dataConsole(res)
         }).catch(err => {
             console.log(err);
         });
         // axios传参----restful形式的URL的get传参
-        axios.get('http://localhost:3101/asData2/789').then(res => {
+        axios.get(myUrl + '/asData2/789').then(res => {
             myConsole.dataConsole(res)
         })
         // axios的get传参---params
-        axios.get('http://localhost:3101/asData3', {
+        axios.get(myUrl + '/asData3', {
             params: {
                 id: 777
             }
@@ -87,12 +162,67 @@
         })
         //------------------------------------------------------------------------------------------------------------
         // axios传参----restful形式的URL的delete传多参
-        axios.delete('http://localhost:3101/asDataDel/133/杨少通').then(res => {
+        axios.delete(myUrl + '/asDataDel/133/杨少通').then(res => {
             myConsole.dataConsole(res)
         });
         //------------------------------------------------------------------------------------------------------------
-        // axios传参----post
-        axios.post
+        // axios的post传参----默认json格式
+        axios.post(myUrl + '/asDataPost1', { id: 1, name: '杨少通' }).then(res => {
+            myConsole.dataConsole(res);
+        })
+        // axios的post传参----表单格式，即application/x-www-form-urlencoded
+        var params = new URLSearchParams();
+        params.append('sendType', 'post');
+        params.append('dataType', '表单格式');
+        params.append('way', '用URLSearchParams实例化对象，通过append()给实例对象添加参数');
+        axios.post(`${myUrl}/asDataPost2`, params).then(res => {
+            myConsole.dataConsole(res);
+        })
+        //------------------------------------------------------------------------------------------------------------
+        // axios的put传参----默认json格式
+        axios.put(`${myUrl}/asDataPut/188`, { sendType: 'put', name: '杨少通' }).then(res => {
+            myConsole.dataConsole(res);
+        })
+        //------------------------------------------------------------------------------------------------------------
+        {
+            // 配置请求的基准URL地址
+            axios.defaults.baseURL = 'http://localhost:3101/';
+            // 配置请求头
+            var myToken = 'myToken'
+            axios.defaults.headers[myToken] = 'I am the configured request header!!!';
+            axios.post('asDflDataPost', { id: 111, name: '杨少通', age: 23, tip: '注意查看headers请求头信息，配置了myToken' }).then(res => {
+                myConsole.dataConsole(res);
+            })
+        }
+        //------------------------------------------------------------------------------------------------------------
+        {
+            // 配置请求拦截器
+            axios.interceptors.request.use(function (config) {
+                // 请求配置，如：
+                console.log(`通过请求拦截器输出的请求地址：${config.url}`);
+                config.headers.myToken = 'new token';
+                console.log(`查看该接口请求NETWORK下Headers中Request Header的myToken：${config.headers.myToken}`);
+                console.log('*****************************************************')
+                return config;  // 必须返回config，否则无效
+            }, function (err) {
+                // 错误处理
+                console.log(err)
+            })
+            // 配置响应拦截器
+            axios.interceptors.response.use(function (res) {  // 接收响应的内容，通过.data获取到数据
+                // 响应配置，如：
+                console.log(`原数据为：${res.data}`);
+                res.data = 'New Data'
+                console.log(`更改数据为：${res.data}`);
+                return res;  // 返回更改后的数据，不返回无效
+            }, function (err) {
+                // 错误处理
+                console.log(err);
+            })
+            axios.get(`${myUrl}/asData0`).then(res => {
+                myConsole.dataConsole(res);
+            })
+        }
     </script>
 </body>
 
