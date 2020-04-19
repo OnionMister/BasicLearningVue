@@ -99,6 +99,18 @@ app.put('/asDataPut/:id', (req, res) => {
 app.post('/asDflDataPost', (req, res) => {
     res.json(req.body);
 })
+//-------------------------------------------------------------------------------------------------------------
+// async-await练习--多个异步任务
+app.get('/async1', (req, res) => {
+    res.send('杨少通');
+});
+app.get('/async2/:name', (req, res) => {
+    if (req.params.name == '杨少通') {
+        res.send(`第一个任务数据：${req.params.name}，结论：是帅哥`);
+    }else{
+        res.send('error')
+    }
+})
 // 启动监听
 app.listen(3101, () => {
     console.log('ServiceTurnedOn')

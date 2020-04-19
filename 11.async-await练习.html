@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>
+        <p>
+            源码：
+            <a href="https://github.com/OnionMister/BasicLearningVue.git" target="_target">
+                <strong>https://github.com/OnionMister/BasicLearningVue.git</strong>
+            </a>
+        </p>
+        <p>
+            接口模拟服务：
+            <a href="http://www.dreamload.cn/blog/?p=979" target="_target">
+                <strong>http://www.dreamload.cn/blog/?p=979</strong>
+            </a>
+        </p>
+        <strong>注：例子可查看源码，效果见Console</strong>
+    </h2>
+    <hr />
+    <p>
+        <strong>相比于传统的回调函数方式获取异步结果，Promise无疑是更方便一些。但其实Promise也不是最好的办法，比如说我们要发送多个异步的接口调用，要想保证他们的顺序，就要用then()进行链式排列操作，这样的代码其实是不简洁的。</strong>
+    </p>
+    <p>
+        <strong>这一小节学习的ES7引入的新语法：async、await，就解决这样的问题。</strong>
+    </p>
+    <hr />
+    <ul>
+        <li>async用于函数，这类函数的返回值是Promise实例对象，需要用.then()获取值</li>
+        <li>await必须用于async函数内，可得到异步结果。<strong>await后接promise对象可以直接获得结果</strong></li>
+    </ul>
+    <hr/>
+    <strong>多个异步任务处理，使用await，顺序处理任务即可</strong>
+    <script src="./js/axios.min.js"></script>
+    <script>
+        // 配置基准URL地址
+        axios.defaults.baseURL = 'http://localhost:3101/';
+        // 设置响应拦截器
+        axios.interceptors.response.use(function (res) {
+            return res.data  // 直接获取数据
+        }, function (err) {
+            console.log(err);
+        });
+        //------------------------------------------------------------------------------------------------------------
+        // 不带返回值的async函数
+        (async function () {
+            const res = await axios.get('asData0');
+            console.log(`async函数内直接输出获取的数据：${res}`);
+        }());
+        //------------------------------------------------------------------------------------------------------------
+        // 带返回值
+        async function cwFun() {
+            const res = await axios.get('asData0');
+            return res
+        }
+        cwFun().then(res => {
+            console.log(`带返回值的async函数，用.then()获取的数据：${res}`);
+        }).catch(err => {
+            console.log(err);
+        }).finally(() => {
+            console.log('带返回值的async函数，用.then()获取数据---执行完毕')
+            console.log('*****************************************************');
+        });
+        //------------------------------------------------------------------------------------------------------------
+        // await后接Promise对象
+        (async function () {
+            var res1 = new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    resolve('Promise对象返回的内容')
+                }, 1000)
+            })
+            console.log('没有使用await的Promise返回结果：');
+            console.log(res1);
+            console.log('*****************************************************')
+            var res2 = await new Promise(function (resolve, reject) {
+                setTimeout(function () {
+                    resolve('Promise对象返回的内容')
+                }, 2000)
+            })
+            console.log('使用await后的Promise返回结果：')
+            console.log(res2);
+            console.log('*****************************************************')
+        }());
+        //------------------------------------------------------------------------------------------------------------
+        //async处理多个异步
+        (async function () {
+            var info = await axios.get('async1');
+            console.log(info);
+            var res = await axios.get(`async2/${info}`);
+            console.log(res);
+            console.log('*****************************************************')
+        })();
+    </script>
+</body>
+
+</html>
